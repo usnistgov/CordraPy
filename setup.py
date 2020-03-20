@@ -1,0 +1,21 @@
+""" This is a simple Python library for interacting with the REST interface of an instance of Cordra.
+"""
+
+from setuptools import setup
+
+def fetch_requirements():
+    required = []
+    with open('requirements.txt') as f:
+        required = f.read().splitlines()
+    return required
+
+setup(
+    name="cordra",
+    py_modules=['cordra'],
+    version='0.1',
+    description='Python client interface to a cordra instance',
+    author='Zachary Trautt, Faical Yannick Congo',
+    author_email='zachary.trautt@nist.gov',
+    include_package_data=True,
+    install_requires=fetch_requirements()
+)
