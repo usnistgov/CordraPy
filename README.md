@@ -2,6 +2,8 @@
 
 This is a simple Python library for interacting with the REST interface of an instance of [Cordra](https://www.cordra.org/).
 
+To begin learning how to use this library, please check out these [examples](https://github.com/ztrautt/CordraPy/blob/master/examples.ipynb).
+
 
 ## Disclaimer
 
