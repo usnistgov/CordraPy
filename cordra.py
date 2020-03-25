@@ -178,7 +178,7 @@ class Objects:
     def update(
         host,
         obj_id,
-        obj_json,
+        obj_json=None,
         jsonPointer=None,
         obj_type=None,
         dryRun=False,
@@ -205,12 +205,14 @@ class Objects:
             params['payloadToDelete'] = payloadToDelete
         
         if payloads:  # multi-part request
+            if not obj_json:
+                raise Exception("obj_json is required when updating payload")
             data = dict()
             data["content"] = json.dumps(obj_json)
             data["acl"] = json.dumps(acls)
             r = check_response(
-                requests.post(
-                    endpoint_url(host, objects_endpoint),
+                requests.put(
+                    endpoint_url(host, objects_endpoint) + obj_id,
                     params=params,
                     files=payloads,
                     data=data,
@@ -219,7 +221,20 @@ class Objects:
                         password),
                     verify=verify))
             return r
-        else:  # simple request
+        elif acls: # just update ACLs
+            r = check_response(
+                requests.put(
+                    endpoint_url(host, acls_endpoint) + obj_id,
+                    params=params,
+                    data=json.dumps(acls),
+                    auth=set_auth(
+                        username,
+                        password),
+                    verify=verify))
+            return r
+        else:  # just update object
+            if not obj_json:
+                raise Exception("obj_json is required")
             r = check_response(
                 requests.put(
                     endpoint_url(host, objects_endpoint) + obj_id,
