@@ -4,12 +4,17 @@ import json
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-objects_endpoint = "objects"
-acls_endpoint = "acls"
-
+# global variables
+objects_endpoint = 'objects/'
+acls_endpoint = 'acls/'
+token_create_endpoint = 'auth/token'
+token_read_endpoint = 'auth/introspect'
+token_delete_endpoint = 'auth/revoke'
+token_grant_type = 'password'
+token_type = 'Bearer'
 
 def endpoint_url(host, endpoint):
-    return host.strip("/") + "/" + endpoint.strip("/") + "/"
+    return host.strip('/') + '/' + endpoint
 
 
 def check_response(response):
@@ -34,6 +39,16 @@ def set_auth(username, password):
         auth = None
     return auth
 
+def get_token_value(token):
+    if isinstance(token, str):
+        return token
+    elif isinstance(token, dict):
+        try:
+            return token['access_token']
+        except:
+            raise Exception('Token json format error.')
+    else:
+        raise Exception('Token format error.')
 
 class Objects:
     def create(
@@ -50,23 +65,23 @@ class Objects:
         payloads=None,
         acls=None
     ):
-        """Create a Cordra object"""
+        '''Create a Cordra object'''
 
         params = dict()
-        params["type"] = obj_type
+        params['type'] = obj_type
         if handle:
-            params["handle"] = handle
+            params['handle'] = handle
         if suffix:
-            params["suffix"] = suffix
+            params['suffix'] = suffix
         if dryRun:
-            params["dryRun"] = dryRun
+            params['dryRun'] = dryRun
         if full:
-            params["full"] = full
+            params['full'] = full
 
         if payloads:  # multi-part request
             data = dict()
-            data["content"] = json.dumps(obj_json)
-            data["acl"] = json.dumps(acls)
+            data['content'] = json.dumps(obj_json)
+            data['acl'] = json.dumps(acls)
             r = check_response(
                 requests.post(
                     endpoint_url(host, objects_endpoint),
@@ -90,7 +105,7 @@ class Objects:
                     verify=verify))
 
             if acls and not dryRun:
-                obj_id = obj_r["id"]
+                obj_id = obj_r['id']
                 acl_r = check_response(
                     requests.put(
                         endpoint_url(host, acls_endpoint) + obj_id,
@@ -114,7 +129,7 @@ class Objects:
         jsonFilter=None,
         full=False
     ):
-        """Retrieve a Cordra object JSON by identifer."""
+        '''Retrieve a Cordra object JSON by identifer.'''
 
         params = dict()
         params['full'] = full
@@ -139,7 +154,7 @@ class Objects:
         password=None,
         verify=None
     ):
-        """Retrieve a Cordra object payload names by identifer."""
+        '''Retrieve a Cordra object payload names by identifer.'''
 
         params = dict()
         params['full'] = True
@@ -161,7 +176,7 @@ class Objects:
         password=None,
         verify=None
     ):
-        """Retrieve a Cordra object payload by identifer and payload name."""
+        '''Retrieve a Cordra object payload by identifer and payload name.'''
 
         params = dict()
         params['payload'] = payload
@@ -190,15 +205,15 @@ class Objects:
         payloadToDelete=None,
         acls=None
     ):
-        """Update a Cordra object"""
+        '''Update a Cordra object'''
     
         params = dict()
         if obj_type:
-            params["type"] = obj_type
+            params['type'] = obj_type
         if dryRun:
-            params["dryRun"] = dryRun
+            params['dryRun'] = dryRun
         if full:
-            params["full"] = full
+            params['full'] = full
         if jsonPointer:
             params['jsonPointer'] = jsonPointer
         if payloadToDelete:
@@ -206,10 +221,10 @@ class Objects:
         
         if payloads:  # multi-part request
             if not obj_json:
-                raise Exception("obj_json is required when updating payload")
+                raise Exception('obj_json is required when updating payload')
             data = dict()
-            data["content"] = json.dumps(obj_json)
-            data["acl"] = json.dumps(acls)
+            data['content'] = json.dumps(obj_json)
+            data['acl'] = json.dumps(acls)
             r = check_response(
                 requests.put(
                     endpoint_url(host, objects_endpoint) + obj_id,
@@ -234,7 +249,7 @@ class Objects:
             return r
         else:  # just update object
             if not obj_json:
-                raise Exception("obj_json is required")
+                raise Exception('obj_json is required')
             r = check_response(
                 requests.put(
                     endpoint_url(host, objects_endpoint) + obj_id,
@@ -256,7 +271,7 @@ class Objects:
         password=None,
         verify=None
     ):
-        """Delete a Cordra object"""
+        '''Delete a Cordra object'''
 
         params = dict()
         if jsonPointer:
@@ -283,7 +298,7 @@ class Objects:
         jsonFilter=None,
         full=False
     ):
-        """Find a Cordra object by query"""
+        '''Find a Cordra object by query'''
 
         params = dict()
         params['query'] = query
@@ -298,4 +313,71 @@ class Objects:
                     username,
                     password),
                 verify=verify))
+        return r
+
+class Token:
+    def create(
+        host,
+        username,
+        password,
+        verify=None,
+        full=False
+    ):
+        '''Create an access Token'''
+        
+        params = dict()
+        params['full'] = full
+
+        auth_json = dict()
+        auth_json['grant_type'] = token_grant_type
+        auth_json['username'] = username
+        auth_json['password'] = password
+
+        r = check_response(
+            requests.post(
+                endpoint_url(host, token_create_endpoint),
+                params=params,
+                data=auth_json,
+                verify=verify))
+        return r
+
+    def read(
+        host,
+        token,
+        verify=None,
+        full=False
+    ):
+        '''Read an access Token'''
+
+        params = dict()
+        params['full'] = full
+
+        auth_json = dict() 
+        auth_json['token'] = get_token_value(token)
+
+        r = check_response(
+            requests.post(
+                endpoint_url(host, token_read_endpoint),
+                params=params,
+                data=auth_json,
+                verify=verify
+            ))
+        return r
+
+    def delete(
+        host,
+        token,
+        verify=None
+    ):
+        '''Delete an access Token'''
+
+        auth_json = dict() 
+        auth_json['token'] = get_token_value(token)
+
+        r = check_response(
+            requests.post(
+                endpoint_url(host, token_delete_endpoint),
+                data=auth_json,
+                verify=verify
+            ))
         return r
