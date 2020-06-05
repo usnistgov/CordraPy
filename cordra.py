@@ -50,6 +50,15 @@ def get_token_value(token):
     else:
         raise Exception('Token format error.')
 
+
+def set_headers(token):
+    if token:
+        headers = dict()
+        headers['Authorization'] = token_type + ' ' + get_token_value(token)
+    else:
+        headers = None
+    return headers
+
 class Objects:
     def create(
         host,
@@ -60,6 +69,7 @@ class Objects:
         dryRun=False,
         username=None,
         password=None,
+        token=None,
         verify=None,
         full=False,
         payloads=None,
@@ -91,6 +101,7 @@ class Objects:
                     auth=set_auth(
                         username,
                         password),
+                    headers=set_headers(token),
                     verify=verify))
             return r
         else:  # simple request
@@ -102,6 +113,7 @@ class Objects:
                     auth=set_auth(
                         username,
                         password),
+                    headers=set_headers(token),
                     verify=verify))
 
             if acls and not dryRun:
@@ -114,6 +126,7 @@ class Objects:
                         auth=set_auth(
                             username,
                             password),
+                        headers=set_headers(token),
                         verify=verify))
                 return [obj_r,acl_r]
             else:
@@ -124,6 +137,7 @@ class Objects:
         obj_id,
         username=None,
         password=None,
+        token=None,
         verify=None,
         jsonPointer=None,
         jsonFilter=None,
@@ -144,6 +158,7 @@ class Objects:
                 auth=set_auth(
                     username,
                     password),
+                headers=set_headers(token),
                 verify=verify))
         return r
 
@@ -152,6 +167,7 @@ class Objects:
         obj_id,
         username=None,
         password=None,
+        token=None,
         verify=None
     ):
         '''Retrieve a Cordra object payload names by identifer.'''
@@ -165,6 +181,7 @@ class Objects:
                 auth=set_auth(
                     username,
                     password),
+                headers=set_headers(token),
                 verify=verify))
         return r['payloads']
 
@@ -174,6 +191,7 @@ class Objects:
         payload,
         username=None,
         password=None,
+        token=None,
         verify=None
     ):
         '''Retrieve a Cordra object payload by identifer and payload name.'''
@@ -187,6 +205,7 @@ class Objects:
                 auth=set_auth(
                     username,
                     password),
+                headers=set_headers(token),
                 verify=verify))
         return r
 
@@ -199,6 +218,7 @@ class Objects:
         dryRun=False,
         username=None,
         password=None,
+        token=None,
         verify=None,
         full=False,
         payloads=None,
@@ -234,6 +254,7 @@ class Objects:
                     auth=set_auth(
                         username,
                         password),
+                    headers=set_headers(token),
                     verify=verify))
             return r
         elif acls: # just update ACLs
@@ -245,6 +266,7 @@ class Objects:
                     auth=set_auth(
                         username,
                         password),
+                    headers=set_headers(token),
                     verify=verify))
             return r
         else:  # just update object
@@ -258,6 +280,7 @@ class Objects:
                     auth=set_auth(
                         username,
                         password),
+                    headers=set_headers(token),
                     verify=verify)
                 )
             return r
@@ -269,6 +292,7 @@ class Objects:
         jsonPointer=None,
         username=None,
         password=None,
+        token=None,
         verify=None
     ):
         '''Delete a Cordra object'''
@@ -284,6 +308,7 @@ class Objects:
                 auth=set_auth(
                     username,
                     password),
+                headers=set_headers(token),
                 verify=verify)
             )
         return r
@@ -293,6 +318,7 @@ class Objects:
         query,
         username=None,
         password=None,
+        token=None,
         verify=None,
         ids=False,
         jsonFilter=None,
@@ -312,6 +338,7 @@ class Objects:
                 auth=set_auth(
                     username,
                     password),
+                headers=set_headers(token),
                 verify=verify))
         return r
 
