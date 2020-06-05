@@ -150,7 +150,7 @@ class Objects:
         if jsonPointer:
             params['jsonPointer'] = jsonPointer
         if jsonFilter:
-            params['filter'] = jsonFilter
+            params['filter'] = str(jsonFilter)
         r = check_response(
             requests.get(
                 endpoint_url(host, objects_endpoint) + obj_id,
@@ -330,7 +330,7 @@ class Objects:
         params['query'] = query
         params['full'] = full
         if jsonFilter:
-            params['filter'] = jsonFilter
+            params['filter'] = str(jsonFilter)
         r = check_response(
             requests.get(
                 endpoint_url(host, objects_endpoint),
