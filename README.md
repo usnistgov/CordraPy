@@ -4,6 +4,10 @@ This is a simple Python library for interacting with the REST interface of an in
 
 To begin learning how to use this library, please check out these [examples](https://github.com/ztrautt/CordraPy/blob/master/examples.ipynb).
 
+## Contribution
+
+[Contributions](https://github.com/ztrautt/CordraPy/blob/master/CONTRIBUTING.md) of ideas, code, bug fixes, and examples are welcomed.
+
 ## Installation
 
 ```
