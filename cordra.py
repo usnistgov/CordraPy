@@ -91,7 +91,8 @@ class Objects:
         if payloads:  # multi-part request
             data = dict()
             data['content'] = json.dumps(obj_json)
-            data['acl'] = json.dumps(acls)
+            if acls:
+                data['acl'] = json.dumps(acls)
             r = check_response(
                 requests.post(
                     endpoint_url(host, objects_endpoint),
@@ -105,6 +106,8 @@ class Objects:
                     verify=verify))
             return r
         else:  # simple request
+            if acls:
+                params['full'] = True
             obj_r = check_response(
                 requests.post(
                     endpoint_url(host, objects_endpoint),
@@ -331,6 +334,8 @@ class Objects:
         params['full'] = full
         if jsonFilter:
             params['filter'] = str(jsonFilter)
+        if ids:
+            params['ids'] = True 
         r = check_response(
             requests.get(
                 endpoint_url(host, objects_endpoint),

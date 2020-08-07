@@ -12,7 +12,7 @@ def fetch_requirements():
 setup(
     name="cordra",
     py_modules=['cordra'],
-    version='0.2',
+    version='0.3',
     description='Python client interface to a cordra instance',
     author='Zachary Trautt, Faical Yannick Congo',
     author_email='zachary.trautt@nist.gov',
