@@ -1,4 +1,14 @@
-# CordraPy - A Python REST Client for Cordra
+<p align="center">
+<img src="https://www.cordra.org/assets/img/logo/cordra-primary-blue.png"
+     height="60"
+     alt="Cordra logo"
+     class="inline">
+</p>
+
+<h1> <p align="center"><sup><strong>
+CordraPy - A Python REST Client for Cordra
+</strong></sup></p>
+</h1>
 
 This is a simple Python library for interacting with the REST interface of an instance of [Cordra](https://www.cordra.org/).
 
