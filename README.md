@@ -2,11 +2,11 @@
 
 This is a simple Python library for interacting with the REST interface of an instance of [Cordra](https://www.cordra.org/).
 
-To begin learning how to use this library, please check out these [examples](https://github.com/ztrautt/CordraPy/blob/master/examples.ipynb).
+To begin learning how to use this library, please check out these [examples](https://github.com/usnistgov/CordraPy/blob/master/examples.ipynb).
 
 ## Contribution
 
-[Contributions](https://github.com/ztrautt/CordraPy/blob/master/CONTRIBUTING.md) of ideas, code, bug fixes, and examples are welcomed.
+[Contributions](https://github.com/usnistgov/CordraPy/blob/master/CONTRIBUTING.md) of ideas, code, bug fixes, and examples are welcomed.
 
 ## Installation
 
