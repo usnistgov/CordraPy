@@ -18,10 +18,19 @@ def get_version():
     return version
 
 
+def test():
+    # import pytest # TODO will implement doctests later
+
+    import cordrapy
+
+    print(cordrapy.__version__)
+
+
 __version__ = get_version()
 
 __all__ = [
     "__version__",
+    "test",
     "CordraObject",
     "Token"
 ]
