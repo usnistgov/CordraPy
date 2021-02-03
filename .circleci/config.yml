@@ -12,13 +12,15 @@ jobs:
       - run:
           name: Setup
           command: |
-            python3 -m venv venv
+            python -m venv venv
             . venv/bin/activate
-            pip3 install -r requirements.txt
+            pip install -r requirements.txt
+            pip install pytest
       - run:
           name: Test
           no_output_timeout: 5m
           command: |
+            . venv/bin/activate
             pip install -e .
             python -c "import cordrapy; cordrapy.test()"
 workflows:
