@@ -10,11 +10,11 @@ def fetch_requirements():
     return required
 
 setup(
-    name="cordra",
+    name="CordraPy",
     py_modules=['cordra'],
-    version='0.3',
+    version='0.3.2',
     description='Python client interface to a cordra instance',
-    author='Zachary Trautt, Faical Yannick Congo',
+    author='Zachary Trautt, Faical Yannick Congo, Sven Voigt',
     author_email='zachary.trautt@nist.gov',
     include_package_data=True,
     install_requires=fetch_requirements()
