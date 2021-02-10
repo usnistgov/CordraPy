@@ -18,6 +18,13 @@ def get_version():
     return version
 
 
+def test():
+    import pytest
+
+    path = __file__.replace("__init__.py", "")
+    pytest.main(args=[path, "--doctest-modules"])
+
+
 __version__ = get_version()
 
 __all__ = [

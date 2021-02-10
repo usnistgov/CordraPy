@@ -60,6 +60,21 @@ def set_headers(token):
     return headers
 
 class CordraObject:
+    """
+    Supports CRUD operations with a running Cordra instance.
+
+    Attributes:
+        host: the location of the cordra instance (URL).
+        obj_json: create the object from json.
+        obj_type: a valid type that exists in the cordra instance as a schema
+    
+    >>> import cordrapy
+    >>> test_object = cordrapy.CordraObject()
+    >>> type(cordrapy.CordraObject())
+    <class 'cordrapy.cordra.CordraObject'>
+    """
+
+
     def create(
         host,
         obj_json,
