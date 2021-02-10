@@ -59,7 +59,7 @@ def set_headers(token):
         headers = None
     return headers
 
-class Objects:
+class CordraObject:
     def create(
         host,
         obj_json,

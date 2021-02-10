@@ -16,3 +16,6 @@ upload_package.bash
 
 # VSCode metadata
 .vscode
+
+# All secret stuff
+*secret*
