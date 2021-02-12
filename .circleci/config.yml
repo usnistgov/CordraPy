@@ -1,0 +1,30 @@
+# Python CircleCI 2.0 configuration file
+version: 2.1
+jobs:
+  pip_install:
+    docker:
+      - image: circleci/python:3.9
+
+    working_directory: ~/cordrapy-pip
+
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            pip install pytest
+      - run:
+          name: Test
+          no_output_timeout: 5m
+          command: |
+            . venv/bin/activate
+            pip install -e .
+            python -c "import cordra; cordra.test()"
+workflows:
+  version: 2
+  test:
+    jobs:
+      - pip_install

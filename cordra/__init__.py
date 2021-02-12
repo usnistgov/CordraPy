@@ -3,6 +3,7 @@
 
 from .cordra import CordraObject, Token
 
+
 def get_version():
     """Get the version of the code from egg_info.
     Returns:
@@ -11,17 +12,22 @@ def get_version():
     from pkg_resources import get_distribution, DistributionNotFound
 
     try:
-        version = get_distribution(__name__.split('.')[0]).version # pylint: disable=no-member
-    except DistributionNotFound: # pragma: no cover
+        version = get_distribution(
+            __name__.split(".")[0]
+        ).version  # pylint: disable=no-member
+    except DistributionNotFound:  # pragma: no cover
         version = "unknown, try running `python setup.py egg_info`"
 
     return version
 
 
+def test():
+    import pytest
+
+    path = __file__.replace("__init__.py", "")
+    pytest.main(args=[path, "--doctest-modules"])
+
+
 __version__ = get_version()
 
-__all__ = [
-    "__version__",
-    "CordraObject",
-    "Token"
-]
+__all__ = ["__version__", "CordraObject", "Token"]
