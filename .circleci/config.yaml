@@ -1,0 +1,31 @@
+# Python CircleCI 2.0 configuration file
+version: 2.1
+jobs:
+  conda_develop:
+    docker:
+      - image: continuumio/miniconda3
+
+    working_directory: ~/repo-conda-develop
+
+    steps:
+      # Step 1: Get and run cordra
+      - run:
+          name: Get Cordra
+          command: |
+            conda env create -f environment.yml
+            source activate pymks
+      # Step 2: obtain repo from GitHub
+      - checkout
+      # only run select notebooks due to possible memory issues
+      - run:
+          name: run tests
+          no_output_timeout: 30m
+          command: |
+            set -e
+            source activate pymks
+            python setup.py develop
+            py.test pymks/fmks --ignore pymks/fmks/tests/test_fe.py
+            py.test notebooks/filter.ipynb
+            py.test notebooks/multiphase.ipynb
+            py.test notebooks/checkerboard.ipynb
+            py.test notebooks/fiber.ipynb
