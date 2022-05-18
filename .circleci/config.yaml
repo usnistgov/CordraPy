@@ -5,27 +5,40 @@ jobs:
     docker:
       - image: continuumio/miniconda3
 
-    working_directory: ~/repo-conda-develop
+    working_directory: ~/repo-test-cordrapy
 
     steps:
       # Step 1: Get and run cordra
       - run:
           name: Get Cordra
           command: |
-            conda env create -f environment.yml
-            source activate pymks
-      # Step 2: obtain repo from GitHub
+            curl https://www.cordra.org/assets/sw/cordra-2.4.0-distribution.zip
+            unzip cordra-2.4.0-distribution.zip -d ./
+            cd cordra-2.4.0
+            rm data/repoInit.json
+            echo '{"adminPassword": "admin","prefix": ""}' > data/repoInit.json
+            ./bin/startup
+          background: true
+      # Step 2: install python
+      - run:
+        name: install python
+        command: |
+          apt-get --yes update
+          apt-get --yes install python3.9
+      # Step 3: obtain repo from GitHub
       - checkout
-      # only run select notebooks due to possible memory issues
+      # Step 4: install python dependencies
+      - run:
+        name: install python modules
+        command: |
+          ls
+          pip install -r requirements.txt
+          pip install -e ./
+      # Step 5: run tests
+      # python setup.py develop
       - run:
           name: run tests
           no_output_timeout: 30m
           command: |
             set -e
-            source activate pymks
-            python setup.py develop
-            py.test pymks/fmks --ignore pymks/fmks/tests/test_fe.py
-            py.test notebooks/filter.ipynb
-            py.test notebooks/multiphase.ipynb
-            py.test notebooks/checkerboard.ipynb
-            py.test notebooks/fiber.ipynb
+            python tests/CRUD_CordraClient.py

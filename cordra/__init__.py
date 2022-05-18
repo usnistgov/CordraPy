@@ -1,8 +1,7 @@
 """ This is a simple Python library for interacting with the REST interface of an instance of Cordra.
 """
 
-from .cordra import CordraOperations, Token
-from .cordraObject import CordraObject
+from .cordra import CordraObject, Token
 from .cordraClient import CordraClient
 
 
@@ -25,7 +24,6 @@ __version__ = get_version()
 
 __all__ = [
     "__version__",
-    "CordraOperations",
     "Token",
     "CordraObject",
     "CordraClient"

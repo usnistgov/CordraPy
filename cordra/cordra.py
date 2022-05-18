@@ -1,5 +1,6 @@
 import requests
 import json
+from warnings import warn
 
 from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -62,7 +63,9 @@ def set_headers(token):
     return headers
 
 
-class CordraOperations:
+class CordraObject:
+    warn("CordraObject may be moved to a new module with a new name in future releases.")
+
     @staticmethod
     def create(
         host,
@@ -370,6 +373,8 @@ class CordraOperations:
         return r
 
 class Token:
+    warn("Token may be moved to a new module with a new name in future releases.")
+
     @staticmethod
     def create(
         host,

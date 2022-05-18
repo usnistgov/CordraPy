@@ -5,7 +5,7 @@ import os
 from copy import deepcopy
 
 # Local imports
-from .cordra import CordraOperations, Token, check_response
+from .cordra import CordraObject, Token, check_response
 
 
 class CordraClient:
@@ -41,8 +41,9 @@ class CordraClient:
 
     host: str #URL
     handle: str="prefix"
-    credentials_file: str #FilePath
-    credentials_token: str #FilePath
+    username: str
+    password: str
+    secret_key_path: str #FilePath
     params: Dict
 
 
@@ -52,38 +53,29 @@ class CordraClient:
 
     def __init__(self, **params):
         assert "host" in params, "Host must be specified to use CordraClient"
+        assert ("username" in params and "password" in params) or "secret_key_path" in params, \
+            "Client requires `username` and `password` params or a `secret_key_path` param"
         self.params = dict()
         self.params.update(params)
         
-        if "credentials_file" in params:
-            self.get_auth(os.path.expanduser(params["credentials_file"]))
-        elif "credentials_token" in params:
+        if "username" in params:
+            self.get_auth()
+            del self.params["username"]
+            del self.params["password"]
+        elif "secret_key_path" in params:
             raise NotImplementedError
         else:
-            raise KeyError("CordraClient requires credentials_file or credentials_token")
+            raise Exception
 
         self.schemas = {
             r.get("name"): r.get("schema")
             for r in self.find("type:Schema")['results']
         }
 
-    @staticmethod
-    def writeCredentialsFile(fp, username="", password=""):
-        with open(fp, "w+") as f:
-            f.write(json.dumps({"username": username, "password": password}))
 
-
-    def get_auth(self, credentials_file):
+    def get_auth(self):
         """Get a token with credentials"""
-
-        # Open loginfile and check it is valid
-        with open( credentials_file ) as f:
-            login = json.load(f)
-        assert login.keys() == {"username","password"}
-
-        login.update(self.params)
-
-        r = Token.create(**login)
+        r = Token.create(**self.params)
 
         # Set up variables and default auth for future requests
         self.params["token"] = r["access_token"]
@@ -107,29 +99,34 @@ class CordraClient:
         params = deepcopy(self.params)
         params.update(kwargs)
 
-        return CordraOperations.create(obj_json=obj, obj_type=obj_type, **params)
+        return CordraObject.create(obj_json=obj, obj_type=obj_type, **params)
 
 
-    def read(self, obj_id, getAll=False, **kwargs):
+    def read(self, obj_id, getObjPayTuple=False, **kwargs):
         """Retrieve an object from Cordra by identifer and create a
         python CordraObject."""
 
         params = deepcopy(self.params)
         params.update(kwargs)
 
-        if getAll:
+        if getObjPayTuple:
             params["full"] = True
 
-        obj = CordraOperations.read(obj_id=obj_id, **params)
+        obj = CordraObject.read(obj_id=obj_id, **params)
 
-        if getAll and "payloads" in obj:
+        if getObjPayTuple:
+            if "payloads" not in obj:
+                return (obj["content"], None)
+                
             payload_info = deepcopy( obj["payloads"] )
             obj["payloads"] = dict()
-            payload_info = CordraOperations.read_payload_info(obj_id=obj_id, **params)
+            payload_info = CordraObject.read_payload_info(obj_id=obj_id, **params)
 
             for pay in payload_info:
                 payName = pay.get("name")
-                obj["payloads"][payName] = CordraOperations.read_payload(obj_id=obj_id, payload=payName, **params)
+                obj["payloads"][payName] = CordraObject.read_payload(obj_id=obj_id, payload=payName, **params)
+
+            return (obj["content"], obj["payloads"])
 
         return obj
 
@@ -140,7 +137,7 @@ class CordraClient:
         params = deepcopy(self.params)
         params.update(kwargs)
 
-        return CordraOperations.update(obj_id=obj_id, obj_json=obj, **params)
+        return CordraObject.update(obj_id=obj_id, obj_json=obj, **params)
 
 
     def delete(self, obj_id, **kwargs):
@@ -149,7 +146,7 @@ class CordraClient:
         params = deepcopy(self.params)
         params.update(kwargs)
 
-        return CordraOperations.delete(obj_id=obj_id, **params)
+        return CordraObject.delete(obj_id=obj_id, **params)
 
 
     def find(self, query, **kwargs):
@@ -158,4 +155,4 @@ class CordraClient:
         params = deepcopy(self.params)
         params.update(kwargs)
 
-        return CordraOperations.find(query=query, **params)
+        return CordraObject.find(query=query, **params)
