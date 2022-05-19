@@ -19,22 +19,16 @@ jobs:
             echo '{"adminPassword": "admin","prefix": ""}' > data/repoInit.json
             ./bin/startup
           background: true
-      # Step 2: install python
-      - run:
-        name: install python
-        command: |
-          apt-get --yes update
-          apt-get --yes install python3.9
-      # Step 3: obtain repo from GitHub
+      # Step 2: obtain repo from GitHub
       - checkout
-      # Step 4: install python dependencies
+      # Step 3: install python dependencies
       - run:
         name: install python modules
         command: |
           ls
           pip install -r requirements.txt
           pip install -e ./
-      # Step 5: run tests
+      # Step 4: run tests
       # python setup.py develop
       - run:
           name: run tests
