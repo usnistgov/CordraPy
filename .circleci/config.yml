@@ -23,11 +23,11 @@ jobs:
           background: true
       # Step 3: install python dependencies
       - run:
-        name: install python modules
-        command: |
-          ls
-          pip install -r requirements.txt
-          pip install -e ./
+          name: install python modules
+          command: |
+            ls
+            pip install -r requirements.txt
+            pip install -e ./
       # Step 4: run tests
       # python setup.py develop
       - run:
