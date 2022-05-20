@@ -1,7 +1,8 @@
 import requests
 import json
+from warnings import warn
 
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # global variables
@@ -12,6 +13,7 @@ token_read_endpoint = 'auth/introspect'
 token_delete_endpoint = 'auth/revoke'
 token_grant_type = 'password'
 token_type = 'Bearer'
+
 
 def endpoint_url(host, endpoint):
     return host.strip('/') + '/' + endpoint
@@ -29,7 +31,7 @@ def check_response(response):
         try:
             return response.json()
         except BaseException:
-            return response.text
+            return response.content
 
 
 def set_auth(username, password):
@@ -38,6 +40,7 @@ def set_auth(username, password):
     else:
         auth = None
     return auth
+
 
 def get_token_value(token):
     if isinstance(token, str):
@@ -59,7 +62,11 @@ def set_headers(token):
         headers = None
     return headers
 
+
 class CordraObject:
+    warn("CordraObject may be moved to a new module with a new name in future releases.")
+
+    @staticmethod
     def create(
         host,
         obj_json,
@@ -73,7 +80,8 @@ class CordraObject:
         verify=None,
         full=False,
         payloads=None,
-        acls=None
+        acls=None,
+        **kwargs
     ):
         '''Create a Cordra object'''
 
@@ -135,6 +143,7 @@ class CordraObject:
             else:
                 return obj_r
 
+    @staticmethod
     def read(
         host,
         obj_id,
@@ -144,7 +153,8 @@ class CordraObject:
         verify=None,
         jsonPointer=None,
         jsonFilter=None,
-        full=False
+        full=False,
+        **kwargs
     ):
         '''Retrieve a Cordra object JSON by identifer.'''
 
@@ -165,13 +175,15 @@ class CordraObject:
                 verify=verify))
         return r
 
+    @staticmethod
     def read_payload_info(
         host,
         obj_id,
         username=None,
         password=None,
         token=None,
-        verify=None
+        verify=None,
+        **kwargs
     ):
         '''Retrieve a Cordra object payload names by identifer.'''
 
@@ -188,6 +200,7 @@ class CordraObject:
                 verify=verify))
         return r['payloads']
 
+    @staticmethod
     def read_payload(
         host,
         obj_id,
@@ -195,7 +208,8 @@ class CordraObject:
         username=None,
         password=None,
         token=None,
-        verify=None
+        verify=None,
+        **kwargs
     ):
         '''Retrieve a Cordra object payload by identifer and payload name.'''
 
@@ -212,6 +226,7 @@ class CordraObject:
                 verify=verify))
         return r
 
+    @staticmethod
     def update(
         host,
         obj_id,
@@ -226,7 +241,8 @@ class CordraObject:
         full=False,
         payloads=None,
         payloadToDelete=None,
-        acls=None
+        acls=None,
+        **kwargs
     ):
         '''Update a Cordra object'''
     
@@ -289,6 +305,7 @@ class CordraObject:
             return r
 
 
+    @staticmethod
     def delete(
         host,
         obj_id,
@@ -296,7 +313,8 @@ class CordraObject:
         username=None,
         password=None,
         token=None,
-        verify=None
+        verify=None,
+        **kwargs
     ):
         '''Delete a Cordra object'''
 
@@ -316,6 +334,7 @@ class CordraObject:
             )
         return r
 
+    @staticmethod
     def find(
         host,
         query,
@@ -325,13 +344,19 @@ class CordraObject:
         verify=None,
         ids=False,
         jsonFilter=None,
-        full=False
+        full=False,
+        pageNum=None,
+        pageSize=None,
+        **kwargs
     ):
         '''Find a Cordra object by query'''
 
         params = dict()
         params['query'] = query
         params['full'] = full
+        if pageNum: params["pageNum"] = pageNum
+        if pageSize: params["pageSize"] = pageSize
+
         if jsonFilter:
             params['filter'] = str(jsonFilter)
         if ids:
@@ -348,12 +373,16 @@ class CordraObject:
         return r
 
 class Token:
+    warn("Token may be moved to a new module with a new name in future releases.")
+
+    @staticmethod
     def create(
         host,
         username,
         password,
         verify=None,
-        full=False
+        full=False,
+        **kwargs
     ):
         '''Create an access Token'''
         
@@ -373,11 +402,13 @@ class Token:
                 verify=verify))
         return r
 
+    @staticmethod
     def read(
         host,
         token,
         verify=None,
-        full=False
+        full=False,
+        **kwargs
     ):
         '''Read an access Token'''
 
@@ -396,10 +427,12 @@ class Token:
             ))
         return r
 
+    @staticmethod
     def delete(
         host,
         token,
-        verify=None
+        verify=None,
+        **kwargs
     ):
         '''Delete an access Token'''
 

@@ -1,0 +1,39 @@
+# Python CircleCI 2.0 configuration file
+version: 2.1
+jobs:
+  cordrapy_develop:
+    docker:
+      - image: continuumio/miniconda3
+
+    working_directory: ~/repo-test-cordrapy
+
+    steps:
+      # Step 1: obtain repo from GitHub
+      - checkout
+      # Step 2: Get and run cordra
+      - run:
+          name: Get Cordra
+          command: |
+            ls
+            set -e
+            apt-get --yes update
+            apt-get --yes upgrade
+            apt-get --yes install curl unzip default-jre
+            curl https://www.cordra.org/assets/sw/cordra-2.4.0-distribution.zip > cordra-2.4.0-distribution.zip
+            unzip cordra-2.4.0-distribution.zip
+            cd cordra-2.4.0
+            rm data/repoInit.json
+            echo '{"adminPassword": "admin","prefix": ""}' > data/repoInit.json
+            (./bin/startup &) | grep -q "Startup complete."
+            cd ../
+            pip install -r requirements.txt
+            pip install Pillow
+            pip install -e ./
+            python tests/CRUD_CordraClient.py
+
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - cordrapy_develop

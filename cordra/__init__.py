@@ -2,6 +2,8 @@
 """
 
 from .cordra import CordraObject, Token
+from .cordraClient import CordraClient
+
 
 def get_version():
     """Get the version of the code from egg_info.
@@ -22,6 +24,7 @@ __version__ = get_version()
 
 __all__ = [
     "__version__",
+    "Token",
     "CordraObject",
-    "Token"
+    "CordraClient"
 ]
