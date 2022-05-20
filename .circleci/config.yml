@@ -25,6 +25,7 @@ jobs:
             rm data/repoInit.json
             echo '{"adminPassword": "admin","prefix": ""}' > data/repoInit.json
             (./bin/startup &) | grep -q "Startup complete."
+            cd ../
             pip install -r requirements.txt
             pip install Pillow
             pip install -e ./
