@@ -16,9 +16,9 @@ jobs:
           command: |
             ls
             set -e
-            apt-get update
-            apt-get upgrade
-            apt-get install curl
+            apt-get --yes update
+            apt-get --yes upgrade
+            apt-get --yes install curl
             curl https://www.cordra.org/assets/sw/cordra-2.4.0-distribution.zip
             unzip cordra-2.4.0-distribution.zip -d ./
             cd cordra-2.4.0
