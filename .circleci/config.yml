@@ -18,9 +18,9 @@ jobs:
             set -e
             apt-get --yes update
             apt-get --yes upgrade
-            apt-get --yes install curl
+            apt-get --yes install curl unzip
             curl https://www.cordra.org/assets/sw/cordra-2.4.0-distribution.zip > cordra-2.4.0-distribution.zip
-            unzip cordra-2.4.0-distribution.zip -d ./
+            unzip cordra-2.4.0-distribution.zip
             cd cordra-2.4.0
             rm data/repoInit.json
             echo '{"adminPassword": "admin","prefix": ""}' > data/repoInit.json
